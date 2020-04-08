@@ -1,5 +1,6 @@
 using DiffEqFlux, OrdinaryDiffEq, Flux, Optim, Plots
 
+u0_network = [0.;0.]
 u0 = Float32[2.; 0.]
 datasize = 30
 tspan = (0.0f0,3.5f0)
@@ -34,7 +35,7 @@ dudt2 = FastChain((x,p) -> x.^3,
 n_ode = NeuralODE(dudt2,tspan,Tsit5(),saveat=t)
 
 function predict_n_ode(p)
-  n_ode(u0,p).+knownPartData
+  n_ode(u0_network,p).+knownPartData
 end
 
 function loss_n_ode(p)
