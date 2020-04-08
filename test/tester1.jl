@@ -1,9 +1,9 @@
 using DiffEqFlux, OrdinaryDiffEq, Flux, Optim, Plots
 
-u0_network = [0.;0.]
+u0_network = [0.001;0.001]
 u0 = Float32[2.; 0.]
 datasize = 30
-tspan = (0.0f0,3.5f0)
+tspan = (0.0f0,1.5f0)
 
 function trueODEfunc(du,u,p,t)
     true_A = [-0.1 2.0; -2.0 -0.1]
@@ -16,7 +16,7 @@ pl = scatter(t,ode_data[1,:],label="data")
 scatter!(t,ode_data[2,:],label="data")
 
 function knownPartODEfunc(du,u,p,t)
-    true_A = [-0.1 0.0; -0.0 -1.0]
+    true_A = [-0.1 0.0; -0.0 -0.1]
     du .= ((u.^3)'true_A)'
 end
 knownProb = ODEProblem(knownPartODEfunc,u0,tspan)
