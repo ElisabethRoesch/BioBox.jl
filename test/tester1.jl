@@ -63,3 +63,5 @@ cb(n_ode.p,loss_n_ode(n_ode.p)...;doplot=true)
 
 res1 = DiffEqFlux.sciml_train(loss_n_ode, n_ode.p, ADAM(0.01), cb = cb, maxiters = 5000)
 cb(res1.minimizer,loss_n_ode(res1.minimizer)...;doplot=true)
+
+savefig("plots/test_result_hybrid_model.pdf")
