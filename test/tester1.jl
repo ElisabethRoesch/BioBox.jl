@@ -21,8 +21,8 @@ function knownPartODEfunc(du,u,p,t)
 end
 knownProb = ODEProblem(knownPartODEfunc,u0,tspan)
 knownPartData = Array(solve(knownProb,Tsit5(),saveat=t))
-pl = scatter(t,knownPartData[1,:],label="data")
-scatter!(t,knownPartData[2,:],label="data")
+pl = scatter(t,knownPartData[1,:],label="known part")
+scatter!(t,knownPartData[2,:],label="known part")
 
 pl = plot(t,ode_data[1,:],label="data")
 plot!(t,ode_data[2,:],label="data")
