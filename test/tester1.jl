@@ -28,7 +28,7 @@ pl = plot(t,ode_data[1,:],label="data")
 plot!(t,ode_data[2,:],label="data")
 scatter!(t,knownPartData[1,:],label="data")
 scatter!(t,knownPartData[2,:],label="data")
-
+savefig("plots/prior.pdf")
 dudt2 = FastChain((x,p) -> x.^3,
             FastDense(2,50,tanh),
             FastDense(50,2))
