@@ -14,9 +14,12 @@ prob = ODEProblem(trueODEfunc,u0,tspan)
 ode_data = Array(solve(prob,Tsit5(),saveat=t))
 pl = scatter(t,ode_data[1,:],label="data")
 scatter!(t,ode_data[2,:],label="data")
-
 function knownPartODEfunc(du,u,p,t)
-    true_A = [-0.1 0.0; -0.0 -0.1]
+    # true_A = [-0.1 .0; -0.0 -0.1] # .pdf
+    # true_A = [-0.0 2.0; -2.0 -0.0] # 2.pdf
+    # true_A = [-0.1 0.0; -0.0 -0.0] # 3.pdf
+    true_A = [-0.0 0.0; -0.0 -0.1] # 4.pdf
+
     du .= ((u.^3)'true_A)'
 end
 knownProb = ODEProblem(knownPartODEfunc,u0,tspan)
@@ -26,9 +29,9 @@ scatter!(t,knownPartData[2,:],label="known part")
 
 pl = plot(t,ode_data[1,:],label="data")
 plot!(t,ode_data[2,:],label="data")
-scatter!(t,knownPartData[1,:],label="data")
-scatter!(t,knownPartData[2,:],label="data")
-savefig("plots/prior.pdf")
+scatter!(t,knownPartData[1,:],label="known part")
+scatter!(t,knownPartData[2,:],label="known part")
+savefig("plots/prior4.pdf")
 dudt2 = FastChain((x,p) -> x.^3,
             FastDense(2,50,tanh),
             FastDense(50,2))
@@ -64,4 +67,4 @@ cb(n_ode.p,loss_n_ode(n_ode.p)...;doplot=true)
 res1 = DiffEqFlux.sciml_train(loss_n_ode, n_ode.p, ADAM(0.01), cb = cb, maxiters = 5000)
 cb(res1.minimizer,loss_n_ode(res1.minimizer)...;doplot=true)
 
-savefig("plots/test_result_hybrid_model.pdf")
+savefig("plots/test_result_hybrid_model4.pdf")
