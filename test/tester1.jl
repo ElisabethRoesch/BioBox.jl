@@ -38,7 +38,7 @@ dudt2 = FastChain((x,p) -> x.^3, # Remove this line?
 n_ode = NeuralODE(dudt2,tspan,Tsit5(),saveat=t)
 
 function predict_n_ode(p)
-  n_ode(u0_network,p).+knownPartData
+  n_ode(u0_network,p).+knownPartData # Change to integrate each step with known
 end
 
 function loss_n_ode(p)
