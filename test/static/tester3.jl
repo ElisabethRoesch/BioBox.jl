@@ -32,7 +32,7 @@ plot!(t,ode_data[2,:],label="data")
 scatter!(t,knownPartData[1,:],label="known part")
 scatter!(t,knownPartData[2,:],label="known part")
 savefig("plots/prior1.pdf")
-dudt2 = FastChain((x,p) -> x, # Remove this line?
+dudt2 = FastChain((x,p) -> x, # Line removed.
             FastDense(2,50,tanh),
             FastDense(50,2))
 n_ode = NeuralODE(dudt2,tspan,Tsit5(),saveat=t)

@@ -13,7 +13,7 @@ prob = ODEProblem(trueODEfunc,u0,tspan)
 ode_data = Array(solve(prob,Tsit5(),saveat=t))
 pl = scatter(t,ode_data[1,:],label="data")
 scatter!(t,ode_data[2,:],label="data")
-
+savefig("plots/noprior.pdf")
 dudt2 = FastChain((x,p) -> x.^3,
             FastDense(2,50,tanh),
             FastDense(50,2))
