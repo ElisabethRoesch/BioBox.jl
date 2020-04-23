@@ -1,4 +1,4 @@
-# Do same as static but with adding ODE sol each time new
+# Do same as static but with adding ODE sol each time new.
 using DiffEqFlux, OrdinaryDiffEq, Flux, Optim, Plots
 
 u0_network = [0.001;0.001]
@@ -39,11 +39,11 @@ dudt2 = FastChain((x,p) -> x.^3, # Remove this line?
 n_ode = NeuralODE(dudt2,tspan,Tsit5(),saveat=t)
 
 function predict_n_ode(p)
-  current_network = n_ode.model
-  print(current_network(u0_network, n_ode.p))
-  test_call = knownPartODEfunc([0.0,0.0],[0.,0.],1,1)
+  current_network = n_ode.model # get current NN of Neural ODE
+  print(current_network(u0_network, n_ode.p)) # get gradient prediction for a U of one time point (here u0_network)
+  test_call = knownPartODEfunc([0.0,0.0],[0.,0.],1,1) # test cope of knownPartODEfunc
   #print(test_call)
-  n_ode(u0_network,p).+knownPartData # Change to integrate each step with known
+  n_ode(u0_network,p).+knownPartData
 end
 
 function loss_n_ode(p)
