@@ -31,7 +31,7 @@ end
 knownProb = ODEProblem(knownPartODEfunc, u0, tspan, ps)
 knownPartData = Array(solve(knownProb, Tsit5(), saveat = t))
 
-pl = plot(t,ode_data[1,:], label = "Observed data", xlabel="Time", ylabel="Species abundance", grid = "off")
+pl = plot(t,ode_data[1,:], label = "Observed data", xlabel = "Time", ylabel="Species abundance", grid = "off")
 plot!(t,ode_data[2,:], label = "Observed data")
 scatter!(t,knownPartData[1,:], label = "Known dynamics of U")
 scatter!(t,knownPartData[2,:], label = "Known dynamics of V")
@@ -42,14 +42,17 @@ n_ode = NeuralODE(dudt2, tspan, Tsit5(), saveat = t)
 
 function predict_n_ode(p)
   current_network = n_ode.model # get current NN of Neural ODE
-  print(current_network(u0_network, n_ode.p)) # get gradient prediction for a U of one time point (here u0_network)
-  n_ode(u0_network,p).+knownPartData
+  #print(current_network(u0_network, n_ode.p)) # get gradient prediction for a U of one time point (here u0_network)
+  n_ode(u0_network,p) .+ knownPartData
 end
 
 function loss_n_ode(p)
     pred = predict_n_ode(p)
+    # fuer dynamisch. hier ode immer loesen um ode data zu generieren?
+    # mach aber keinen sinn wenn deterministisch ist sol ja immer gleich...
     loss = sum(abs2,pred .- ode_data)
-    loss,pred
+    # idee: fitten mit sum abs of dudt2 und knownPartODEfunc???
+    loss, pred
 end
 
 loss_n_ode(n_ode.p) # n_ode.p stores the initial parameters of the neural ODE
@@ -68,5 +71,5 @@ end
 # Display the ODE with the initial parameter values.
 cb(n_ode.p,loss_n_ode(n_ode.p)...; doplot = true)
 res1 = DiffEqFlux.sciml_train(loss_n_ode, n_ode.p, ADAM(0.01), cb = cb, maxiters = 2000)
-cb(res1.minimizer,loss_n_ode(res1.minimizer)...; doplot = true)
+cb(res1.minimizer, loss_n_ode(res1.minimizer)...; doplot = true)
 savefig("test/TS/TS_model_hybrid_fits/first_term_unknown_fit.pdf")
