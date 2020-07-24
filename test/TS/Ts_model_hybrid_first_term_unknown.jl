@@ -35,7 +35,7 @@ pl = plot(t,ode_data[1,:], label = "Observed data", xlabel="Time", ylabel="Speci
 plot!(t,ode_data[2,:], label = "Observed data")
 scatter!(t,knownPartData[1,:], label = "Known dynamics of U")
 scatter!(t,knownPartData[2,:], label = "Known dynamics of V")
-#savefig("plots/prior4.pdf")
+savefig("test/TS/TS_model_hybrid_fits/first_term_unknown_start.pdf")
 dudt2 = FastChain(FastDense(2, 50, tanh),
             FastDense(50, 2))
 n_ode = NeuralODE(dudt2, tspan, Tsit5(), saveat = t)
@@ -69,4 +69,4 @@ end
 cb(n_ode.p,loss_n_ode(n_ode.p)...; doplot = true)
 res1 = DiffEqFlux.sciml_train(loss_n_ode, n_ode.p, ADAM(0.01), cb = cb, maxiters = 2000)
 cb(res1.minimizer,loss_n_ode(res1.minimizer)...; doplot = true)
-#savefig("plots/test_result_hybrid_model4.pdf")
+savefig("test/TS/TS_model_hybrid_fits/first_term_unknown_fit.pdf")

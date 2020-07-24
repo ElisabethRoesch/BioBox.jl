@@ -24,18 +24,18 @@ scatter!(t,ode_data[2,:],label = "Complete dynamics of V")
 function knownPartODEfunc(states, ps, t)
   alpha1,beta,alpha2, gamma = ps
   u,v = states
-  du = -u
-  dv = -v
+  du = alpha1/(1+v^beta)
+  dv = alpha2/(1+u^gamma)
   return [du, dv]
 end
 knownProb = ODEProblem(knownPartODEfunc, u0, tspan, ps)
 knownPartData = Array(solve(knownProb, Tsit5(), saveat = t))
 
-pl = plot(t,ode_data[1,:], label = "Observed data", xlabel="Time", ylabel="Species abundance", grid = "off")
-plot!(t,ode_data[2,:], label = "Observed data")
-scatter!(t,knownPartData[1,:], label = "Known dynamics of U")
-scatter!(t,knownPartData[2,:], label = "Known dynamics of V")
-#savefig("plots/prior4.pdf")
+pl = plot(t, ode_data[1,:], label = "Observed data", xlabel = "Time", ylabel = "Species abundance", grid = "off")
+plot!(t, ode_data[2,:], label = "Observed data")
+scatter!(t, knownPartData[1,:], label = "Known dynamics of U")
+scatter!(t, knownPartData[2,:], label = "Known dynamics of V")
+savefig("test/TS/TS_model_hybrid_fits/second_term_unknown_start.pdf")
 dudt2 = FastChain(FastDense(2, 50, tanh),
             FastDense(50, 2))
 n_ode = NeuralODE(dudt2, tspan, Tsit5(), saveat = t)
@@ -43,7 +43,7 @@ n_ode = NeuralODE(dudt2, tspan, Tsit5(), saveat = t)
 function predict_n_ode(p)
   current_network = n_ode.model # get current NN of Neural ODE
   print(current_network(u0_network, n_ode.p)) # get gradient prediction for a U of one time point (here u0_network)
-  n_ode(u0_network,p).+knownPartData
+  n_ode(u0_network,p) .+ knownPartData
 end
 
 function loss_n_ode(p)
@@ -69,4 +69,4 @@ end
 cb(n_ode.p,loss_n_ode(n_ode.p)...; doplot = true)
 res1 = DiffEqFlux.sciml_train(loss_n_ode, n_ode.p, ADAM(0.01), cb = cb, maxiters = 2000)
 cb(res1.minimizer,loss_n_ode(res1.minimizer)...; doplot = true)
-#savefig("plots/test_result_hybrid_model4.pdf")
+savefig("test/TS/TS_model_hybrid_fits/second_term_unknown_fit.pdf")
