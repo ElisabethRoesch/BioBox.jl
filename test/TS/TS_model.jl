@@ -8,11 +8,11 @@ using Plots, DifferentialEquations
 
 # derivative as function
 function dudt(states, ps, t)
-    alpha1,beta,alpha2, gamma =ps
-    u,v=states
-    du=alpha1/(1+v^beta)-u
-    dv=alpha2/(1+u^gamma)-v
-    return [du,dv]
+    alpha1, beta, alpha2, gamma = ps
+    u, v = states
+    du = alpha1/(1+v^beta)-u
+    dv = alpha2/(1+u^gamma)-v
+    return [du, dv]
 end
 # test setting
 u0=[3., 2.9]
