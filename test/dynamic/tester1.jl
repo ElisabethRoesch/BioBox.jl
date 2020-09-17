@@ -9,10 +9,10 @@ function trueODEfunc(du,u,p,t)
     true_A = [-0.1 2.0; -2.0 -0.1]
     du .= ((u.^3)'true_A)'
 end
-t = range(tspan[1],tspan[2],length=datasize)
+t = range(tspan[1],tspan[2],length = datasize)
 prob = ODEProblem(trueODEfunc,u0,tspan)
-ode_data = Array(solve(prob,Tsit5(),saveat=t))
-pl = scatter(t,ode_data[1,:],label="data")
+ode_data = Array(solve(prob,Tsit5(),saveat = t))
+pl = scatter(t,ode_data[1,:],label = "data")
 scatter!(t,ode_data[2,:],label="data")
 function knownPartODEfunc(du,u,p,t)
     # true_A = [-0.1 .0; -0.0 -0.1] # .pdf
